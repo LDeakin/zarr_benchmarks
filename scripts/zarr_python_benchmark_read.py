@@ -8,7 +8,7 @@ from functools import wraps
 import sys
 
 import zarr
-from zarr.store import LocalStore, RemoteStore
+from zarr.storage import LocalStore, RemoteStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
@@ -25,15 +25,15 @@ def coro(f):
 @click.option('--concurrent_chunks', type=int, default=None, help='Number of concurrent async chunk reads. Ignored if --read-all is set')
 @click.option('--read_all', is_flag=True, show_default=True, default=False, help='Read the entire array in one operation.')
 async def main(path, concurrent_chunks, read_all):
-    if "benchmark_compress_shard.zarr" in path:
-        sys.exit(1)
+    # if "benchmark_compress_shard.zarr" in path:
+    #     sys.exit(1)
 
     if path.startswith("http"):
         store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
     else:
         store = LocalStore(path)
 
-    dataset = zarr.open(store=store)
+    dataset = zarr.open(store=store, mode='r')
 
     domain_shape = dataset.shape
     chunk_shape = dataset.chunks

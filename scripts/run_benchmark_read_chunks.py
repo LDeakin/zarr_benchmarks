@@ -12,6 +12,7 @@ implementation_to_args = {
     "zarrs_rust_async": ["zarrs_benchmark_read_async", "--concurrent-chunks"],
     "tensorstore_python": ["./scripts/tensorstore_python_benchmark_read.py", "--concurrent_chunks"],
     "zarr_python": ["./scripts/zarr_python_benchmark_read.py", "--concurrent_chunks"],
+    "zarr_dask_python": ["./scripts/zarr_dask_python_benchmark_read.py", "--concurrent_chunks"],
 }
 
 implementations = [
@@ -20,6 +21,7 @@ implementations = [
     # "zarrs_rust_async",
     "tensorstore_python",
     "zarr_python",
+    "zarr_dask_python",
 ]
 
 images = [

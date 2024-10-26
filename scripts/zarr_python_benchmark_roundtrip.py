@@ -8,7 +8,7 @@ from functools import wraps
 import sys
 
 import zarr
-from zarr.store import LocalStore, RemoteStore
+from zarr.storage import LocalStore, RemoteStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
@@ -24,16 +24,13 @@ def coro(f):
 @click.argument('path', type=str)
 @click.argument('output', type=str)
 async def main(path, output):
-    if "benchmark_compress_shard.zarr" in path:
-        sys.exit(1)
-
     if path.startswith("http"):
         store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
     else:
         store = LocalStore(path)
 
-    dataset = zarr.open(store=store)
-    dataset_out = zarr.create(store=LocalStore(output), shape=dataset.shape, chunks=dataset.chunks, dtype=dataset.dtype, codecs=dataset.metadata.codecs)
+    dataset = zarr.open(store=store, mode='r')
+    dataset_out = zarr.create(store=LocalStore(output), mode='w', shape=dataset.shape, chunks=dataset.chunks, dtype=dataset.dtype, codecs=dataset.metadata.codecs)
 
     start_time = timeit.default_timer()
 

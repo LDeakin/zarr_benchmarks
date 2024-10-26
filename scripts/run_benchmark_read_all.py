@@ -13,6 +13,7 @@ implementation_to_args = {
     # "zarrs_rust_async": ["zarrs_benchmark_read_async", "--read-all"],
     "tensorstore_python": ["./scripts/tensorstore_python_benchmark_read.py", "--read_all"],
     "zarr_python": ["./scripts/zarr_python_benchmark_read.py", "--read_all"],
+    "zarr_dask_python": ["./scripts/zarr_dask_python_benchmark_read.py", "--read_all"],
 }
 
 implementations = [
@@ -21,6 +22,7 @@ implementations = [
     # "zarrs_rust_async",
     "tensorstore_python",
     "zarr_python",
+    "zarr_dask_python",
 ]
 
 images = [
