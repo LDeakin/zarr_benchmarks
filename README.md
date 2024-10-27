@@ -11,13 +11,16 @@ This repository contains benchmarks of Zarr V3 implementations.
 ## Implementations Benchmarked
 - [`LDeakin/zarrs`](https://github.com/LDeakin/zarrs) v0.17.0 (Rust 1.81.0) via [`LDeakin/zarrs_tools`](https://github.com/LDeakin/zarrs_tools) 0.6.0 (4beba5f)
   - Benchmark executable (read): [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_benchmark_read_sync.rs)
-  - Benchmark executable (round trip): [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
+  - Benchmark executable (round trip): [zarrs_reencode](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
 - [`google/tensorstore`](https://github.com/google/tensorstore) v0.1.67 (Python 3.12.5)
   - Benchmark script (read): [scripts/tensorstore_python_benchmark_read.py](./scripts/tensorstore_python_benchmark_read.py)
   - Benchmark script (round trip): [scripts/tensorstore_python_benchmark_roundtrip.py](./scripts/tensorstore_python_benchmark_roundtrip.py)
 - [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python) 3.0.0b1 (Python 3.12.5)
   - Benchmark script (read): [scripts/zarr_python_benchmark_read.py](./scripts/zarr_python_benchmark_read.py)
   - Benchmark script (roundtrip): [scripts/zarr_python_benchmark_roundtrip.py](./scripts/zarr_python_benchmark_roundtrip.py)
+- [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python) 3.0.0b1 (Python 3.12.5) with [`ilan-gold/zarrs-python`](https://github.com/ilan-gold/zarrs-python) `CodecPipeline`
+  - Benchmark script (read): [scripts/zarrs_python_benchmark_read.py](./scripts/zarrs_python_benchmark_read.py)
+  - Benchmark script (roundtrip): [scripts/zarrs_python_benchmark_roundtrip.py](./scripts/zarrs_python_benchmark_roundtrip.py)
 
 > [!WARNING]
 > Python benchmarks (`tensorstore` and `zarr-python`) are subject to the overheads of Python and may not be using an optimal API/parameters.

@@ -17,7 +17,9 @@ implementations = {
     "zarrs_rust": "LDeakin/zarrs (0.17.0)",
     "tensorstore_python": "google/tensorstore (0.1.67)",
     "zarr_python": "zarr-developers/zarr-python (3.0.0b1)",
-    "zarr_dask_python": "zarr-developers/zarr-python (3.0.0b1) + dask (2024.10.0)",
+    "zarrs_python": "ilan-gold/zarrs-python (0.1.0)",
+    "zarr_dask_python": "zarr-python (3.0.0b1) + dask (2024.10.0)",
+    "zarrs_dask_python": "zarrs-python (0.1.0) + dask (2024.10.0)",
 }
 
 images = {

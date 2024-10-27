@@ -1,6 +1,6 @@
-Metric,Time (s),Time (s),Time (s),Time (s),Memory (GB),Memory (GB),Memory (GB),Memory (GB)
-Implementation,zarrs_rust,tensorstore_python,zarr_python,zarr_dask_python,zarrs_rust,tensorstore_python,zarr_python,zarr_dask_python
-Image,,,,,,,,
-data/benchmark.zarr,2.27,8.32,18.69,16.05,0.794704,0.917924,9.136356,1.743212
-data/benchmark_compress.zarr,1.32,8.15,15.22,15.72,1.015828,1.676168,9.152844,1.696828
-data/benchmark_compress_shard.zarr,2.98,4.91,147.8,45.9,0.223664,2.373284,9.061304,2.102664
+Metric,Time (s),Time (s),Time (s),Time (s),Time (s),Time (s),Memory (GB),Memory (GB),Memory (GB),Memory (GB),Memory (GB),Memory (GB)
+Implementation,zarrs_rust,tensorstore_python,zarr_python,zarrs_python,zarr_dask_python,zarrs_dask_python,zarrs_rust,tensorstore_python,zarr_python,zarrs_python,zarr_dask_python,zarrs_dask_python
+Image,,,,,,,,,,,,
+data/benchmark.zarr,2.39,8.69,20.61,6.53,16.17,5.45,0.793368,0.921124,9.101864,9.746524,1.710308,1.788632
+data/benchmark_compress.zarr,1.34,8.07,15.53,5.03,15.58,5.02,1.056636,1.641684,9.104244,10.016892,1.648424,1.874856
+data/benchmark_compress_shard.zarr,2.97,5.01,150.25,4.89,45.54,4.89,0.224676,2.24676,9.060596,10.035104,2.137,1.851436
