@@ -7,7 +7,7 @@ from matplotlib.lines import Line2D
 LEGEND_COLS = 2
 YMAX_READ_ALL = 6
 YMAX_READ_CHUNKS = 8
-YMAX_ROUNDTRIP = 50
+YMAX_ROUNDTRIP = 20
 # YMAX_READ_ALL = None
 # YMAX_READ_CHUNKS = None
 # YMAX_ROUNDTRIP = None
@@ -95,8 +95,8 @@ def plot_read_all():
     ax_time.get_legend().remove()
     ax_mem.get_legend().remove()
 
-    fig.savefig("plots/benchmark_read_all.svg")
-    fig.savefig("plots/benchmark_read_all.pdf")
+    fig.savefig("plots/benchmark_read_all.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig("plots/benchmark_read_all.pdf", metadata={'Date': None, 'Creator': None})
 
 
 def plot_read_chunks():
@@ -154,8 +154,8 @@ def plot_read_chunks():
     custom_bar_label(ax_time)
     custom_bar_label(ax_mem)
 
-    fig.savefig("plots/benchmark_read_chunks.svg")
-    fig.savefig("plots/benchmark_read_chunks.pdf")
+    fig.savefig("plots/benchmark_read_chunks.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig("plots/benchmark_read_chunks.pdf", metadata={'Date': None, 'Creator': None})
 
 
 def plot_roundtrip():
@@ -195,8 +195,8 @@ def plot_roundtrip():
     ax_time.get_legend().remove()
     ax_mem.get_legend().remove()
 
-    fig.savefig("plots/benchmark_roundtrip.svg")
-    fig.savefig("plots/benchmark_roundtrip.pdf")
+    fig.savefig("plots/benchmark_roundtrip.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig("plots/benchmark_roundtrip.pdf", metadata={'Date': None, 'Creator': None})
 
 if __name__ == "__main__":
     plot_read_all()

@@ -24,6 +24,9 @@ def coro(f):
 @click.argument('path', type=str)
 @click.argument('output', type=str)
 async def main(path, output):
+    # if "benchmark_compress_shard.zarr" in path:
+    #     sys.exit(1)
+
     if path.startswith("http"):
         store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
     else:

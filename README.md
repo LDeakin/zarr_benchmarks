@@ -39,9 +39,9 @@ All datasets are $1024x1024x2048$ `uint16` arrays.
 
 | Name                               | Chunk Shape | Shard Shape | Compression                 | Size   |
 |------------------------------------|-------------|-------------|-----------------------------|--------|
-| data/benchmark.zarr                | $512^3$     |             | None                        | 8.0 GB |
-| data/benchmark_compress.zarr       | $512^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
-| data/benchmark_compress_shard.zarr | $32^3$      | $512^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
+| data/benchmark.zarr                | $256^3$     |             | None                        | 8.0 GB |
+| data/benchmark_compress.zarr       | $256^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
+| data/benchmark_compress_shard.zarr | $32^3$      | $256^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
 
 ## Benchmark System
 - AMD Ryzen 5900X
