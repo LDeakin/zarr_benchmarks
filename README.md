@@ -66,6 +66,9 @@ This benchmark measures the the minimum time and peak memory usage to read a dat
 
 ![read chunks benchmark image](./plots/benchmark_read_chunks.svg)
 
+ > [!NOTE]
+ > `zarr-python` benchmarks with sharding are not visible in this plot
+
 [Table of raw measurements (benchmarks_read_chunks.md)](./measurements/benchmark_read_chunks.md)
 
 ## Round Trip Benchmark

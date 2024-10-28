@@ -6,7 +6,7 @@ from matplotlib.lines import Line2D
 
 LEGEND_COLS = 2
 YMAX_READ_ALL = 6
-YMAX_READ_CHUNKS = 8
+YMAX_READ_CHUNKS = 4
 YMAX_ROUNDTRIP = 20
 # YMAX_READ_ALL = None
 # YMAX_READ_CHUNKS = None

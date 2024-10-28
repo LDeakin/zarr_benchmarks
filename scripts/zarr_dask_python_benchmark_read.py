@@ -26,7 +26,15 @@ def main(path, concurrent_chunks, read_all):
             # _client = Client(threads_per_worker=1, n_workers=concurrent_chunks) # very high overhead
             # dask.config.set(scheduler='processes', num_workers=concurrent_chunks) # very high overhead
             dask.config.set(scheduler='threads', num_workers=concurrent_chunks)
-        arr.map_blocks(lambda x: x).compute() # BROKEN with print(x.shape)?
+
+        @dask.delayed
+        def read_chunk(chunk) -> None:
+            # Do nothing with the chunk (just read it into memory)
+            pass
+        results = []
+        for chunk in arr.to_delayed().ravel():
+            results.append(read_chunk(chunk))
+        dask.compute(results)
 
     elapsed = timeit.default_timer() - start_time
     elapsed_ms = elapsed * 1000.0
