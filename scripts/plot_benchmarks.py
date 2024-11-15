@@ -4,25 +4,31 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
 
+import zarr
+import zarrs_python
+zarrs_python.__version__ = "0.1.0" # FIXME
+import dask
+
 LEGEND_COLS = 2
-YMAX_READ_ALL = 6
+YMAX_READ_ALL = 4
+YMAX_READ_ALL_DASK = 40
 YMAX_READ_CHUNKS = 4
 YMAX_ROUNDTRIP = 20
+YMAX_ROUNDTRIP_DASK = 50
 # YMAX_READ_ALL = None
 # YMAX_READ_CHUNKS = None
 # YMAX_ROUNDTRIP = None
 
-
-implementations = {
+IMPLEMENTATIONS = {
     "zarrs_rust": "LDeakin/zarrs (0.17.0)",
     "tensorstore_python": "google/tensorstore (0.1.67)",
-    "zarr_python": "zarr-developers/zarr-python (3.0.0b1)",
-    "zarrs_python": "ilan-gold/zarrs-python (0.1.0)",
-    "zarr_dask_python": "zarr-python (3.0.0b1) + dask (2024.10.0)",
-    "zarrs_dask_python": "zarrs-python (0.1.0) + dask (2024.10.0)",
+    "zarr_python": f"zarr-developers/zarr-python ({zarr.__version__})",
+    "zarrs_python": f"ilan-gold/zarrs-python ({zarrs_python.__version__})",
+    "zarr_dask_python": "Default BatchedCodecPipeline",
+    "zarrs_dask_python": f"ZarrsCodecPipeline via zarrs__python ({zarrs_python.__version__})",
 }
 
-images = {
+IMAGES = {
     "data/benchmark.zarr": "Uncompressed",
     "data/benchmark_compress.zarr": "Compressed",
     "data/benchmark_compress_shard.zarr": "Compressed\n + Sharded",
@@ -59,10 +65,16 @@ def custom_bar_label(ax, padding=5, rotation=90):
                         rotation=rotation,
                         clip_on=False)
 
-def plot_read_all():
+def plot_read_all(plot_dask: bool, ymax: float):
     df = pd.read_csv("measurements/benchmark_read_all.csv", header=[0, 1], index_col=0)
     df.index = ["Uncompressed", "Compressed", "Compressed\n+ Sharded"]
-    df.rename(level=1, columns=implementations, inplace=True)
+
+    if plot_dask:
+        df = df.loc[:, df.columns.get_level_values(1).str.contains("dask")]
+    else:
+        df = df.loc[:, ~df.columns.get_level_values(1).str.contains("dask")]
+
+    df.rename(level=1, columns=IMPLEMENTATIONS, inplace=True)
     print(df)
 
 
@@ -75,12 +87,13 @@ def plot_read_all():
     # Plot the data
     df["Time (s)"].plot(kind='bar', ax=ax_time)
     ax_time.set_ylim(ymin=0)
-    fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title="Zarr V3 implementation", borderaxespad=0)
+    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title=title, borderaxespad=0)
     df["Memory (GB)"].plot(kind='bar', ax=ax_mem)
 
     # Styling
     ax_time.set_ylabel("Elapsed time (s)")
-    ax_time.set_ylim(ymin=0, ymax=YMAX_READ_ALL)
+    ax_time.set_ylim(ymin=0, ymax=ymax)
     ax_time.tick_params(axis='x', labelrotation=0)
     ax_time.grid(True, which='both', axis='y')
     ax_time.spines['top'].set_visible(False)
@@ -97,12 +110,24 @@ def plot_read_all():
     ax_time.get_legend().remove()
     ax_mem.get_legend().remove()
 
-    fig.savefig("plots/benchmark_read_all.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig("plots/benchmark_read_all.pdf", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_read_all{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_read_all{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 
-def plot_read_chunks():
+def plot_read_chunks(plot_dask: bool):
     df = pd.read_csv("measurements/benchmark_read_chunks.csv", header=[0, 1], index_col=[0, 1])
+
+    if plot_dask:
+        df = df.loc[:, df.columns.get_level_values(1).str.contains("dask")]
+    else:
+        df = df.loc[:, ~df.columns.get_level_values(1).str.contains("dask")]
+
+    # Reduce the dictionary to contain only the specified keys
+    def reduce_dict(d, keys):
+        return {k: d[k] for k in keys if k in d}
+
+    implementations = reduce_dict(IMPLEMENTATIONS, df.columns.get_level_values(1))
+
     df = df.reset_index(level=1)
     print(df)
 
@@ -120,11 +145,12 @@ def plot_read_chunks():
 
     # Custom legend
     custom_lines = [Line2D([0], [0], color=cmap[i]) for i in range(len(implementations))]
-    fig.legend(custom_lines, [implementation.replace(" ", " ") for implementation in implementations.values()], loc="outside upper left", ncol=2, title="Zarr V3 implementation", borderaxespad=0)
+    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    fig.legend(custom_lines, [implementation.replace(" ", " ") for implementation in implementations.values()], loc="outside upper left", ncol=2, title=title, borderaxespad=0)
     custom_lines = [Line2D([0], [0], color='k', ls=':'),
                 Line2D([0], [0], color='k', ls='--'),
                 Line2D([0], [0], color='k', ls='-')]
-    fig.legend(custom_lines, images.values(), loc="outside upper right", ncol=2, title="Dataset", borderaxespad=0)
+    fig.legend(custom_lines, IMAGES.values(), loc="outside upper right", ncol=2, title="Dataset", borderaxespad=0)
 
     ax_time.get_legend().remove()
     ax_mem.get_legend().remove()
@@ -156,16 +182,21 @@ def plot_read_chunks():
     custom_bar_label(ax_time)
     custom_bar_label(ax_mem)
 
-    fig.savefig("plots/benchmark_read_chunks.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig("plots/benchmark_read_chunks.pdf", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_read_chunks{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_read_chunks{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 
-def plot_roundtrip():
+def plot_roundtrip(plot_dask: bool, ymax: float):
     df = pd.read_csv("measurements/benchmark_roundtrip.csv", header=[0, 1], index_col=0)
     df.index = ["Uncompressed", "Compressed", "Compressed\n+ Sharded"]
-    df.rename(level=1, columns=implementations, inplace=True)
-    print(df)
 
+    if plot_dask:
+        df = df.loc[:, df.columns.get_level_values(1).str.contains("dask")]
+    else:
+        df = df.loc[:, ~df.columns.get_level_values(1).str.contains("dask")]
+
+    df.rename(level=1, columns=IMPLEMENTATIONS, inplace=True)
+    print(df)
 
     # Prepare split axis figure and axes
     fig = plt.figure(figsize=(9, 4), layout="constrained")
@@ -175,8 +206,9 @@ def plot_roundtrip():
 
     # Plot the data
     df["Time (s)"].plot(kind='bar', ax=ax_time)
-    ax_time.set_ylim(ymin=0, ymax=YMAX_ROUNDTRIP)
-    fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title="Zarr V3 implementation", borderaxespad=0)
+    ax_time.set_ylim(ymin=0, ymax=ymax)
+    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title=title, borderaxespad=0)
     df["Memory (GB)"].plot(kind='bar', ax=ax_mem)
 
     # Styling
@@ -197,12 +229,15 @@ def plot_roundtrip():
     ax_time.get_legend().remove()
     ax_mem.get_legend().remove()
 
-    fig.savefig("plots/benchmark_roundtrip.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig("plots/benchmark_roundtrip.pdf", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_roundtrip{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
+    fig.savefig(f"plots/benchmark_roundtrip{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 if __name__ == "__main__":
-    plot_read_all()
-    plot_read_chunks()
-    plot_roundtrip()
+    plot_read_all(plot_dask=False, ymax=YMAX_READ_ALL)
+    plot_read_all(plot_dask=True, ymax=YMAX_READ_ALL_DASK)
+    plot_read_chunks(plot_dask=False)
+    plot_read_chunks(plot_dask=True)
+    plot_roundtrip(plot_dask=False, ymax=YMAX_ROUNDTRIP)
+    plot_roundtrip(plot_dask=True, ymax=YMAX_ROUNDTRIP_DASK)
 
 plt.show()
