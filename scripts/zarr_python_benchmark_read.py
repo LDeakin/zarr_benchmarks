@@ -12,6 +12,10 @@ from zarr.storage import LocalStore, RemoteStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
+zarr.config.set({
+    "async.concurrency": 10, # None is too much memory
+})
+
 def coro(f):
     @wraps(f)
     def wrapper(*args, **kwargs):

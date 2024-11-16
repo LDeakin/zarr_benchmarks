@@ -9,18 +9,19 @@ This repository contains benchmarks of Zarr V3 implementations.
 > Also consider restarting development of the official zarr benchmark repository: https://github.com/zarr-developers/zarr-benchmark
 
 ## Implementations Benchmarked
-- [`LDeakin/zarrs`](https://github.com/LDeakin/zarrs) v0.17.0 (Rust 1.81.0) via [`LDeakin/zarrs_tools`](https://github.com/LDeakin/zarrs_tools) 0.6.0 (4beba5f)
-  - Benchmark executable (read): [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_benchmark_read_sync.rs)
-  - Benchmark executable (round trip): [zarrs_reencode](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
-- [`google/tensorstore`](https://github.com/google/tensorstore) v0.1.67 (Python 3.12.5)
-- [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python) 3.0.0b1 (Python 3.12.5)
-  - With and without the `ZarrsCodecPipeline` from [`ilan-gold/zarrs-python`](https://github.com/ilan-gold/zarrs-python) 0.1.0
-  - With and without [`dask`](https://github.com/dask/dask) 2024.10.0
+- [`LDeakin/zarrs`](https://github.com/LDeakin/zarrs) via [`LDeakin/zarrs_tools`](https://github.com/LDeakin/zarrs_tools)
+  - Read executable: [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_benchmark_read_sync.rs)
+  - Round trip executable: [zarrs_reencode](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
+- Python (v3.12.7):
+  - [`google/tensorstore`](https://github.com/google/tensorstore)
+  - [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python)
+    - With and without the `ZarrsCodecPipeline` from [`ilan-gold/zarrs-python`](https://github.com/ilan-gold/zarrs-python)
+    - With and without [`dask`](https://github.com/dask/dask)
 
-Benchmark scripts are in the [scripts](./scripts/) folder.
+Benchmark scripts are in the [scripts](./scripts/) folder and implementation versions are listed in the benchmark charts.
 
 > [!WARNING]
-> Python benchmarks (`tensorstore` and `zarr-python`) are subject to the overheads of Python and may not be using an optimal API/parameters.
+> Python benchmarks are subject to the overheads of Python and may not be using an optimal API/parameters.
 >
 > Please open a PR if you can improve these benchmarks.
 

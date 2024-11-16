@@ -8,15 +8,19 @@ import dask
 import dask.array as da
 
 import zarr
-import zarrs_python  # noqa: F401
-zarr.config.set(
-    codec_pipeline={
-        "path": "zarrs_python.ZarrsCodecPipeline",
-        "validate_checksums": False,
+
+import zarrs
+zarr.config.set({
+    "threading.num_workers": None,
+    "async.concurrency": None,
+    "array.write_empty_chunks": False,
+    "codec_pipeline": {
+        "path": "zarrs.ZarrsCodecPipeline",
+        "validate_checksums": True,
         "store_empty_chunks": False,
-        "concurrent_target": None,
+        "chunk_concurrent_minimum": 4,
     }
-)
+})
 
 @click.command()
 @click.argument('path', type=str)

@@ -12,15 +12,18 @@ from zarr.storage import LocalStore, RemoteStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
-import zarrs_python  # noqa: F401
-zarr.config.set(
-    codec_pipeline={
-        "path": "zarrs_python.ZarrsCodecPipeline",
-        "validate_checksums": False,
+import zarrs
+zarr.config.set({
+    "threading.num_workers": None,
+    "async.concurrency": None,
+    "array.write_empty_chunks": False,
+    "codec_pipeline": {
+        "path": "zarrs.ZarrsCodecPipeline",
+        "validate_checksums": True,
         "store_empty_chunks": False,
-        "concurrent_target": None,
+        "chunk_concurrent_minimum": 4,
     }
-)
+})
 
 
 def coro(f):

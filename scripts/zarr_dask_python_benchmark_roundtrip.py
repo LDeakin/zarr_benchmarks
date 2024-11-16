@@ -3,8 +3,13 @@
 import timeit
 import click
 import sys
+import zarr
 
 import dask.array as da
+
+zarr.config.set({
+    "async.concurrency": None,
+})
 
 @click.command()
 @click.argument('path', type=str)

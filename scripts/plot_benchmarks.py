@@ -3,11 +3,14 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
+import subprocess
+import re
+from importlib.metadata import version
 
 import zarr
-import zarrs_python
-zarrs_python.__version__ = "0.1.0" # FIXME
+import zarrs
 import dask
+import tensorstore
 
 LEGEND_COLS = 2
 YMAX_READ_ALL = 4
@@ -19,13 +22,25 @@ YMAX_ROUNDTRIP_DASK = 50
 # YMAX_READ_CHUNKS = None
 # YMAX_ROUNDTRIP = None
 
+# Get the implementation versions
+if not hasattr(zarrs, "__version__"):
+    zarrs.__version__ = version("zarrs")
+if not hasattr(tensorstore, "__version__"):
+    tensorstore.__version__ = version("tensorstore")
+zarrs_tools_ver = subprocess.run(["zarrs_reencode", "--version"], stdout=subprocess.PIPE, text=True).stdout
+if m := re.search(r"\(zarrs (.+?)\)", zarrs_tools_ver):
+    # E.g. zarrs_tools 0.6.0-beta.1 (zarrs 0.18.0-beta.0) -> 0.18.0-beta.0
+    zarrs_ver = m.group(1)
+else:
+    zarrs_ver = "0.18.0-beta.0"
+
 IMPLEMENTATIONS = {
-    "zarrs_rust": "LDeakin/zarrs (0.17.0)",
-    "tensorstore_python": "google/tensorstore (0.1.67)",
+    "zarrs_rust": f"LDeakin/zarrs ({zarrs_ver})",
+    "tensorstore_python": f"google/tensorstore ({tensorstore.__version__})",
     "zarr_python": f"zarr-developers/zarr-python ({zarr.__version__})",
-    "zarrs_python": f"ilan-gold/zarrs-python ({zarrs_python.__version__})",
+    "zarrs_python": f"ilan-gold/zarrs-python ({zarrs.__version__})",
     "zarr_dask_python": "Default BatchedCodecPipeline",
-    "zarrs_dask_python": f"ZarrsCodecPipeline via zarrs__python ({zarrs_python.__version__})",
+    "zarrs_dask_python": f"ZarrsCodecPipeline via zarrs_python ({zarrs.__version__})",
 }
 
 IMAGES = {
@@ -87,7 +102,7 @@ def plot_read_all(plot_dask: bool, ymax: float):
     # Plot the data
     df["Time (s)"].plot(kind='bar', ax=ax_time)
     ax_time.set_ylim(ymin=0)
-    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    title = f"dask/dask ({dask.__version__}) + zarr-developers/zarr-python ({zarr.__version__})" if plot_dask else "Zarr V3 Implementation"
     fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title=title, borderaxespad=0)
     df["Memory (GB)"].plot(kind='bar', ax=ax_mem)
 
@@ -145,7 +160,7 @@ def plot_read_chunks(plot_dask: bool):
 
     # Custom legend
     custom_lines = [Line2D([0], [0], color=cmap[i]) for i in range(len(implementations))]
-    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    title = f"dask/dask ({dask.__version__}) + zarr-developers/zarr-python ({zarr.__version__})" if plot_dask else "Zarr V3 Implementation"
     fig.legend(custom_lines, [implementation.replace(" ", " ") for implementation in implementations.values()], loc="outside upper left", ncol=2, title=title, borderaxespad=0)
     custom_lines = [Line2D([0], [0], color='k', ls=':'),
                 Line2D([0], [0], color='k', ls='--'),
@@ -207,7 +222,7 @@ def plot_roundtrip(plot_dask: bool, ymax: float):
     # Plot the data
     df["Time (s)"].plot(kind='bar', ax=ax_time)
     ax_time.set_ylim(ymin=0, ymax=ymax)
-    title = f"zarr-python ({zarr.__version__}) + dask ({dask.__version__})" if plot_dask else "Zarr V3 Implementation"
+    title = f"dask/dask ({dask.__version__}) + zarr-developers/zarr-python ({zarr.__version__})" if plot_dask else "Zarr V3 Implementation"
     fig.legend(loc='outside upper center', ncol=LEGEND_COLS, title=title, borderaxespad=0)
     df["Memory (GB)"].plot(kind='bar', ax=ax_mem)
 
