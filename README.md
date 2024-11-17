@@ -78,8 +78,8 @@ This benchmark measures the the minimum time and peak memory usage to read a dat
 
 ![read chunks benchmark image](./plots/benchmark_read_chunks.svg)
 
- > [!NOTE]
- > `zarr-python` benchmarks with sharding are not visible in this plot
+> [!NOTE]
+> `zarr-python` benchmarks with sharding are not visible in this plot
 
 ### Dask
 
