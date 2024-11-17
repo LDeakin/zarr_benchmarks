@@ -37,12 +37,11 @@ Benchmark scripts are in the [scripts](./scripts/) folder and implementation ver
 ## Benchmark Data
 All datasets are $1024x2048x2048$ `uint16` arrays.
 
-
 | Name                               | Chunk Shape | Shard Shape | Compression                 | Size   |
 |------------------------------------|-------------|-------------|-----------------------------|--------|
-| data/benchmark.zarr                | $256^3$     |             | None                        | 8.0 GB |
-| data/benchmark_compress.zarr       | $256^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
-| data/benchmark_compress_shard.zarr | $32^3$      | $256^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
+| Uncompressed                       | $256^3$     |             | None                        | 8.0 GB |
+| Compressed                         | $256^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
+| Compressed + Sharded               | $32^3$      | $256^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
 
 ## Benchmark System
 - AMD Ryzen 5900X
