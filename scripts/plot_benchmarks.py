@@ -40,7 +40,7 @@ IMPLEMENTATIONS = {
     "zarr_python": f"zarr-developers/zarr-python ({zarr.__version__})",
     "zarrs_python": f"zarr-developers/zarr-python ({zarr.__version__}) \n + ilan-gold/zarrs-python ({zarrs.__version__}) ZarrsCodecPipeline",
     "zarr_dask_python": "Default BatchedCodecPipeline",
-    "zarrs_dask_python": f"ZarrsCodecPipeline via zarrs_python ({zarrs.__version__})",
+    "zarrs_dask_python": f"ZarrsCodecPipeline via ilan-gold/zarrs-python ({zarrs.__version__})",
 }
 
 IMAGES = {
