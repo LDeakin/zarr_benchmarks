@@ -38,7 +38,7 @@ IMPLEMENTATIONS = {
     "zarrs_rust": f"LDeakin/zarrs ({zarrs_ver})",
     "tensorstore_python": f"google/tensorstore ({tensorstore.__version__})",
     "zarr_python": f"zarr-developers/zarr-python ({zarr.__version__})",
-    "zarrs_python": f"ilan-gold/zarrs-python ({zarrs.__version__})",
+    "zarrs_python": f"zarr-developers/zarr-python ({zarr.__version__}) \n + ilan-gold/zarrs-python ({zarrs.__version__}) ZarrsCodecPipeline",
     "zarr_dask_python": "Default BatchedCodecPipeline",
     "zarrs_dask_python": f"ZarrsCodecPipeline via zarrs_python ({zarrs.__version__})",
 }
