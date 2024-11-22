@@ -9,18 +9,19 @@ This repository contains benchmarks of Zarr V3 implementations.
 > Also consider restarting development of the official zarr benchmark repository: https://github.com/zarr-developers/zarr-benchmark
 
 ## Implementations Benchmarked
-- [`LDeakin/zarrs`](https://github.com/LDeakin/zarrs) v0.17.0 (Rust 1.81.0) via [`LDeakin/zarrs_tools`](https://github.com/LDeakin/zarrs_tools) 0.6.0 (4beba5f)
-  - Benchmark executable (read): [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_benchmark_read_sync.rs)
-  - Benchmark executable (round trip): [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
-- [`google/tensorstore`](https://github.com/google/tensorstore) v0.1.67 (Python 3.12.5)
-  - Benchmark script (read): [scripts/tensorstore_python_benchmark_read.py](./scripts/tensorstore_python_benchmark_read.py)
-  - Benchmark script (round trip): [scripts/tensorstore_python_benchmark_roundtrip.py](./scripts/tensorstore_python_benchmark_roundtrip.py)
-- [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python) 3.0.0b1 (Python 3.12.5)
-  - Benchmark script (read): [scripts/zarr_python_benchmark_read.py](./scripts/zarr_python_benchmark_read.py)
-  - Benchmark script (roundtrip): [scripts/zarr_python_benchmark_roundtrip.py](./scripts/zarr_python_benchmark_roundtrip.py)
+- [`LDeakin/zarrs`](https://github.com/LDeakin/zarrs) via [`LDeakin/zarrs_tools`](https://github.com/LDeakin/zarrs_tools)
+  - Read executable: [zarrs_benchmark_read_sync](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_benchmark_read_sync.rs)
+  - Round trip executable: [zarrs_reencode](https://github.com/LDeakin/zarrs_tools/blob/main/src/bin/zarrs_reencode.rs)
+- Python (v3.12.7):
+  - [`google/tensorstore`](https://github.com/google/tensorstore)
+  - [`zarr-developers/zarr-python`](https://github.com/zarr-developers/zarr-python)
+    - With and without the `ZarrsCodecPipeline` from [`ilan-gold/zarrs-python`](https://github.com/ilan-gold/zarrs-python)
+    - With and without [`dask`](https://github.com/dask/dask)
+
+Benchmark scripts are in the [scripts](./scripts/) folder and implementation versions are listed in the benchmark charts.
 
 > [!WARNING]
-> Python benchmarks (`tensorstore` and `zarr-python`) are subject to the overheads of Python and may not be using an optimal API/parameters.
+> Python benchmarks are subject to the overheads of Python and may not be using an optimal API/parameters.
 >
 > Please open a PR if you can improve these benchmarks.
 
@@ -34,14 +35,13 @@ This repository contains benchmarks of Zarr V3 implementations.
  - `benchmark_all`: run all benchmarks
 
 ## Benchmark Data
-All datasets are $1024x1024x2048$ `uint16` arrays.
-
+All datasets are $1024x2048x2048$ `uint16` arrays.
 
 | Name                               | Chunk Shape | Shard Shape | Compression                 | Size   |
 |------------------------------------|-------------|-------------|-----------------------------|--------|
-| data/benchmark.zarr                | $256^3$     |             | None                        | 8.0 GB |
-| data/benchmark_compress.zarr       | $256^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
-| data/benchmark_compress_shard.zarr | $32^3$      | $256^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
+| Uncompressed                       | $256^3$     |             | None                        | 8.0 GB |
+| Compressed                         | $256^3$     |             | `blosclz` 9 + bitshuffling  | 377 MB |
+| Compressed + Sharded               | $32^3$      | $256^3$     | `blosclz` 9 + bitshuffling  | 1.1 GB |
 
 ## Benchmark System
 - AMD Ryzen 5900X
@@ -49,14 +49,21 @@ All datasets are $1024x1024x2048$ `uint16` arrays.
 - 2TB Samsung 990 Pro
 - Ubuntu 22.04 (in Windows 11 WSL2, swap disabled, 32GB available memory)
 
-## Read All Benchmark
-This benchmark measures the minimum time and and peak memory usage to read an entire dataset into memory.
+## Round Trip Benchmark
+
+This benchmark measures time and peak memory usage to "round trip" a dataset (potentially chunk-by-chunk).
  - The disk cache is cleared between each measurement
  - These are best of 3 measurements
 
-![read all benchmark image](./plots/benchmark_read_all.svg)
+[Table of raw measurements (benchmarks_roundtrip.md)](./measurements/benchmark_roundtrip.md)
 
-[Table of raw measurements (benchmarks_read_all.md)](./measurements/benchmark_read_all.md)
+### Standalone
+
+![roundtrip benchmark image](./plots/benchmark_roundtrip.svg)
+
+### Dask
+
+![roundtrip benchmark image dask](./plots/benchmark_roundtrip_dask.svg)
 
 ## Read Chunk-By-Chunk Benchmark
 
@@ -64,19 +71,30 @@ This benchmark measures the the minimum time and peak memory usage to read a dat
  - The disk cache is cleared between each measurement
  - These are best of 1 measurements
 
-![read chunks benchmark image](./plots/benchmark_read_chunks.svg)
-
- > [!NOTE]
- > `zarr-python` benchmarks with sharding are not visible in this plot
-
 [Table of raw measurements (benchmarks_read_chunks.md)](./measurements/benchmark_read_chunks.md)
 
-## Round Trip Benchmark
+### Standalone
 
-This benchmark measures time and peak memory usage to "round trip" a dataset (potentially chunk-by-chunk).
+![read chunks benchmark image](./plots/benchmark_read_chunks.svg)
+
+> [!NOTE]
+> `zarr-python` benchmarks with sharding are not visible in this plot
+
+### Dask
+
+![read chunks benchmark image dask](./plots/benchmark_read_chunks_dask.svg)
+
+## Read All Benchmark
+This benchmark measures the minimum time and and peak memory usage to read an entire dataset into memory.
  - The disk cache is cleared between each measurement
  - These are best of 3 measurements
 
-![roundtrip benchmark image](./plots/benchmark_roundtrip.svg)
+[Table of raw measurements (benchmarks_read_all.md)](./measurements/benchmark_read_all.md)
 
-[Table of raw measurements (benchmarks_roundtrip.md)](./measurements/benchmark_roundtrip.md)
+### Standalone
+
+![read all benchmark image](./plots/benchmark_read_all.svg)
+
+### Dask
+
+![read all benchmark image dask](./plots/benchmark_read_all_dask.svg)

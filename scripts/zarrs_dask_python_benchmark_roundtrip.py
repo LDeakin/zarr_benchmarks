@@ -3,12 +3,22 @@
 import timeit
 import click
 import sys
-import zarr
 
 import dask.array as da
 
+import zarr
+
+import zarrs
 zarr.config.set({
-    "async.concurrency": None,
+    "threading.num_workers": None,
+    "array.write_empty_chunks": False,
+    "codec_pipeline": {
+        "path": "zarrs.ZarrsCodecPipeline",
+        "validate_checksums": True,
+        "store_empty_chunks": False,
+        "chunk_concurrent_minimum": 4,
+        "chunk_concurrent_maximum": None,
+    }
 })
 
 @click.command()
