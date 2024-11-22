@@ -11,13 +11,13 @@ import zarr
 import zarrs
 zarr.config.set({
     "threading.num_workers": None,
-    "async.concurrency": None,
     "array.write_empty_chunks": False,
     "codec_pipeline": {
         "path": "zarrs.ZarrsCodecPipeline",
         "validate_checksums": True,
         "store_empty_chunks": False,
         "chunk_concurrent_minimum": 4,
+        "chunk_concurrent_maximum": None,
     }
 })
 
