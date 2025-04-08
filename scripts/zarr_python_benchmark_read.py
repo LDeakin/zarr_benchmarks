@@ -62,7 +62,7 @@ async def main(path, concurrent_chunks, read_all):
                 tg.create_task(chunk_read(chunk_index))
     elif concurrent_chunks == 1:
         for chunk_index in np.ndindex(*num_chunks):
-            dataset.get_block_selection(chunk_index)
+            dataset[tuple(slice(i * s, (1 + i) * s) for i, s in zip(chunk_index, chunk_shape))]
     else:
         semaphore = asyncio.Semaphore(concurrent_chunks)
         async def chunk_read_concurrent_limit(chunk_index):
