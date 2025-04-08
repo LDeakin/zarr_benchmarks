@@ -8,7 +8,7 @@ from functools import wraps
 import sys
 
 import zarr
-from zarr.storage import LocalStore, RemoteStore
+from zarr.storage import LocalStore, FsspecStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
@@ -32,9 +32,9 @@ async def main(path, output):
     #     sys.exit(1)
 
     if path.startswith("http"):
-        store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
+        store = FsspecStore.from_url(url=path) # broken with zarr-python 3.0.0a0
     else:
-        store = LocalStore(path)
+        store = LocalStore(path, read_only=True)
 
     dataset = zarr.open(store=store, mode='r')
     dataset_out = zarr.create(store=LocalStore(output), mode='w', shape=dataset.shape, chunks=dataset.chunks, dtype=dataset.dtype, codecs=dataset.metadata.codecs)

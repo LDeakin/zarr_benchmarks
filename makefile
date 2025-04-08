@@ -1,8 +1,6 @@
 setup:
 	uv venv --python 3.12
 	uv pip install -r requirements.txt
-	uv pip install git+https://github.com/ilan-gold/zarrs-python.git@ld/chunk_codec_concurrency
-	# uv pip install --upgrade --force-reinstall ../zarrs-python
 	cargo binstall zarrs_tools@0.6.0-beta.1
 
 binstall:

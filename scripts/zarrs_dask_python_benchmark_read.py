@@ -14,6 +14,7 @@ zarr.config.set({
     "threading.num_workers": None,
     "array.write_empty_chunks": False,
     "codec_pipeline": {
+        'batch_size': 1,
         "path": "zarrs.ZarrsCodecPipeline",
         "validate_checksums": True,
         "store_empty_chunks": False,
