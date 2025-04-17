@@ -51,7 +51,7 @@ async def main(path, concurrent_chunks, read_all):
     dataset = zarr.open(store=store, mode='r')
 
     domain_shape = dataset.shape
-    chunk_shape = dataset.chunks
+    chunk_shape = dataset.shards or dataset.chunks
 
     print("Domain shape", domain_shape)
     print("Chunk shape", chunk_shape)
