@@ -13,6 +13,7 @@ zarr.config.set({
     "threading.num_workers": None,
     "array.write_empty_chunks": False,
     "codec_pipeline": {
+        'batch_size': 1,
         "path": "zarrs.ZarrsCodecPipeline",
         "validate_checksums": True,
         "store_empty_chunks": False,
@@ -27,8 +28,8 @@ zarr.config.set({
 def main(path, output):
     # if "benchmark_compress_shard.zarr" in path:
     #     sys.exit(1)
-
-    arr = da.from_zarr(path)
+    z = zarr.open_array(path)
+    arr = da.from_zarr(path, chunks=z.shards)
     start_time = timeit.default_timer()
     da.to_zarr(arr, output)
     elapsed = timeit.default_timer() - start_time

@@ -4,13 +4,14 @@ import timeit
 import click
 
 import zarr
-from zarr.storage import LocalStore, RemoteStore
+from zarr.storage import LocalStore, FsspecStore
 
 import zarrs
 zarr.config.set({
     "threading.num_workers": None,
     "array.write_empty_chunks": False,
     "codec_pipeline": {
+        'batch_size': 1,
         "path": "zarrs.ZarrsCodecPipeline",
         "validate_checksums": True,
         "store_empty_chunks": False,
@@ -24,9 +25,9 @@ zarr.config.set({
 @click.argument('output', type=str)
 def main(path, output):
     if path.startswith("http"):
-        store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
+        store = FsspecStore.from_url(url=path) # broken with zarr-python 3.0.0a0
     else:
-        store = LocalStore(path)
+        store = LocalStore(path, read_only=True)
 
     dataset = zarr.open(store=store, mode='r')
     dataset_out = zarr.create(store=LocalStore(output), mode='w', shape=dataset.shape, chunks=dataset.chunks, dtype=dataset.dtype, codecs=dataset.metadata.codecs)

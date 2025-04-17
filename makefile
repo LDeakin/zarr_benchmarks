@@ -1,9 +1,7 @@
 setup:
 	uv venv --python 3.12
 	uv pip install -r requirements.txt
-	uv pip install git+https://github.com/ilan-gold/zarrs-python.git@ld/chunk_codec_concurrency
-	# uv pip install --upgrade --force-reinstall ../zarrs-python
-	cargo binstall zarrs_tools@0.6.0-beta.1
+	cargo binstall zarrs_tools@0.7.1
 
 binstall:
 	curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash

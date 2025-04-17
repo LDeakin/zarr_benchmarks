@@ -8,7 +8,7 @@ from functools import wraps
 import sys
 
 import zarr
-from zarr.storage import LocalStore, RemoteStore
+from zarr.storage import LocalStore, FsspecStore
 from zarr.core.indexing import BlockIndexer
 from zarr.core.buffer import default_buffer_prototype
 
@@ -33,14 +33,14 @@ async def main(path, concurrent_chunks, read_all):
     #     sys.exit(1)
 
     if path.startswith("http"):
-        store = RemoteStore(url=path) # broken with zarr-python 3.0.0a0
+        store = FsspecStore.from_url(url=path) # broken with zarr-python 3.0.0a0
     else:
-        store = LocalStore(path)
+        store = LocalStore(path, read_only=True)
 
     dataset = zarr.open(store=store, mode='r')
 
     domain_shape = dataset.shape
-    chunk_shape = dataset.chunks
+    chunk_shape = dataset.shards or dataset.chunks
 
     print("Domain shape", domain_shape)
     print("Chunk shape", chunk_shape)
@@ -62,7 +62,7 @@ async def main(path, concurrent_chunks, read_all):
                 tg.create_task(chunk_read(chunk_index))
     elif concurrent_chunks == 1:
         for chunk_index in np.ndindex(*num_chunks):
-            dataset.get_block_selection(chunk_index)
+            dataset[tuple(slice(i * s, (1 + i) * s) for i, s in zip(chunk_index, chunk_shape))]
     else:
         semaphore = asyncio.Semaphore(concurrent_chunks)
         async def chunk_read_concurrent_limit(chunk_index):
