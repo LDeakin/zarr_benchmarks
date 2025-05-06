@@ -27,8 +27,9 @@ def coro(f):
 @coro
 @click.argument('path', type=str)
 @click.option('--concurrent_chunks', type=int, default=None, help='Number of concurrent async chunk reads. Ignored if --read-all is set')
+@click.option('--inner_chunks', is_flag=True, show_default=True, default=False, help='Reader inner-chunk-by-inner-chunk. Ignored if --read-all is set')
 @click.option('--read_all', is_flag=True, show_default=True, default=False, help='Read the entire array in one operation.')
-async def main(path, concurrent_chunks, read_all):
+async def main(path, concurrent_chunks, inner_chunks, read_all):
     # if "benchmark_compress_shard.zarr" in path:
     #     sys.exit(1)
 
@@ -40,7 +41,10 @@ async def main(path, concurrent_chunks, read_all):
     dataset = zarr.open(store=store, mode='r')
 
     domain_shape = dataset.shape
-    chunk_shape = dataset.shards or dataset.chunks
+    if inner_chunks:
+        chunk_shape = dataset.chunks
+    else:
+        chunk_shape = dataset.shards or dataset.chunks
 
     print("Domain shape", domain_shape)
     print("Chunk shape", chunk_shape)
