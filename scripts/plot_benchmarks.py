@@ -12,6 +12,8 @@ import zarrs
 import dask
 import tensorstore
 
+plt.rcParams['svg.hashsalt'] = 'deterministic'
+
 LEGEND_COLS = 2
 YMAX_READ_ALL = 4
 YMAX_READ_ALL_DASK = 40
@@ -126,7 +128,7 @@ def plot_read_all(plot_dask: bool, ymax: float):
     ax_mem.get_legend().remove()
 
     fig.savefig(f"plots/benchmark_read_all{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig(f"plots/benchmark_read_all{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
+    # fig.savefig(f"plots/benchmark_read_all{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 
 def plot_read_chunks(plot_dask: bool):
@@ -198,7 +200,7 @@ def plot_read_chunks(plot_dask: bool):
     custom_bar_label(ax_mem)
 
     fig.savefig(f"plots/benchmark_read_chunks{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig(f"plots/benchmark_read_chunks{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
+    # fig.savefig(f"plots/benchmark_read_chunks{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 
 def plot_roundtrip(plot_dask: bool, ymax: float):
@@ -245,7 +247,7 @@ def plot_roundtrip(plot_dask: bool, ymax: float):
     ax_mem.get_legend().remove()
 
     fig.savefig(f"plots/benchmark_roundtrip{'_dask' if plot_dask else ''}.svg", metadata={'Date': None, 'Creator': None})
-    fig.savefig(f"plots/benchmark_roundtrip{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
+    # fig.savefig(f"plots/benchmark_roundtrip{'_dask' if plot_dask else ''}.pdf", metadata={'Date': None, 'Creator': None})
 
 if __name__ == "__main__":
     plot_read_all(plot_dask=False, ymax=YMAX_READ_ALL)
